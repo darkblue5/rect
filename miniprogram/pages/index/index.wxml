@@ -1,0 +1,265 @@
+<swiper current="{{currentData}}" class='swiper' style="height: 1300rpx;" duration="800" bindchange='swiperChange'>
+	<swiper-item>
+		<van-row custom-class="ixTop" gutter="20">
+			<!-- <van-picker columns="{{ columns }}" bind:change="onPChange" /> -->
+			<van-col span="9">
+				<van-cell title="{{curGrade}}" is-link arrow-direction="down" bind:click="showPopup" />
+			</van-col>
+			<van-col span="15">
+				<van-cell title="{{curTitle}}" is-link arrow-direction="down" bind:click="showPopup" />
+			</van-col>
+		</van-row>
+
+		<van-row custom-class="ixOpt">
+			<van-col span="6">
+				<van-cell title="对照" title-width="60rpx" >
+					<van-switch checked="{{ txtOption }}" active-color="#51b1e8" inactive-color="#dadada" size="32rpx" bind:change="onTxtSwChange" />
+				</van-cell>
+			</van-col>
+			<van-col span="6">
+				<van-cell title="智能" title-width="60rpx" >
+					<van-switch checked="{{ nlpOption }}" active-color="#51b1e8" inactive-color="#dadada" size="32rpx" bind:change="onNlpSwChange" />
+				</van-cell>
+			</van-col>
+			<van-col span="7">
+				<view class="vw_err_info">
+					<view class="vw_err_icon">
+						<text class="tx_err_icon">X</text>
+					</view>
+					<view class="vw_err_numb">
+						<text class="tx_err_numb">{{errHundred}}</text>
+					</view>
+					<view class="vw_err_numb">
+						<text class="tx_err_numb">{{errTens}}</text>
+					</view>
+					<view class="vw_err_numb">
+						<text class="tx_err_numb">{{errDigit}}</text>
+					</view>
+				</view>
+			</van-col>
+			<van-col span="4">
+				<view class="vw_err_info">
+					<view class="vw_per_numb">
+						<text class="tx_per_num">{{rate}}</text>
+					</view>
+					<view class="vw_err_icon">
+						<text class="tx_per_icon">%</text>
+					</view>
+				</view>
+			</van-col>
+			<!-- <van-switch checked="{{ checked }}" active-color="#07c160" inactive-color="#ee0a24" size="18px"/> -->
+		</van-row>
+
+		<van-row custom-class="ixMid">
+			<view wx:for="{{ctext}}" wx:key="index" wx:for-index="odx">
+				<view  class="vw_origin_txt" >
+					<block wx:if="{{txtOption == true}}">
+						<view class="tx_origin" wx:for="{{ctext[odx]}}" wx:for-item="word" wx:key="index">
+							<text >{{word}}</text>
+						</view>
+					</block>
+				</view>
+				<view class="vw_rect_txt">
+					<view class="tx_rect" wx:for="{{rtext[odx]}}" wx:for-item="word" wx:key="index" wx:for-index="idx">
+						<text class="ix_rect_word  {{ judg[odx][idx] ? 'bg_correct' : 'bg_error' }}">{{word}}</text>			
+					</view>
+				</view>
+			</view>
+		</van-row>
+
+		<van-row gutter="20" custom-class="ixBtm">
+			<van-col span="8">
+				<van-button type="default" color="#b5b5b5" block bind:click="finishRect" block>结　束</van-button>
+			</van-col>
+
+			<van-col span="16">
+				<van-button color="#0c98e7" block bind:click="startRect">
+					<view class="{{showView?'header_view_show':'header_view_hide'}}">
+						开　始
+					</view>
+					<van-count-down use-slot id="counter" class="{{showView?'header_view_hide':'header_view_show'}}" time="{{time}}" auto-start="{{ false }}" format="ss" bind:change="onChange" bind:finish="onTmFinish">
+						<text class="item">{{ timeData.seconds }}</text>
+					</van-count-down>
+
+				</van-button>
+			</van-col>
+		</van-row>
+
+		<!-- <van-row>
+			<view>
+				{{tmsg}}
+			</view>
+		</van-row> -->
+
+	</swiper-item>
+
+	<!-- Rank page -->
+	<swiper-item class="rank_page">
+
+		<van-row>
+			<view class="top-10 ques_title">{{rkNkname}} @ {{txtGrade}} </view>
+		</van-row>
+
+		<van-row>
+			<!-- 显示星期 -->
+			<view class="week">
+				<view wx:for="{{weeks_ch}}" wx:key="{{index}}" data-idx="{{index}}"  wx:key="index">{{item}}</view>
+			</view>
+		</van-row>
+
+		<van-row>
+
+			<view class='days'>
+				<!-- 列 -->
+				<view class="columns" wx:for="{{days.length/7}}" wx:for-index="i" wx:key="i">
+					<view wx:for="{{days}}" wx:for-index="j" wx:key="j">
+						<!-- 行 -->
+						<view class="rows" wx:if="{{j/7 == i}}">
+							<view class="rows" wx:for="{{7}}" wx:for-index="k" wx:key="k">
+								<!-- 每个月份的空的单元格 -->
+								<view class='cell' wx:if="{{days[j+k].date == null}}">
+									<text decode="{{true}}">&nbsp;&nbsp;</text>
+								</view>
+
+								<!-- 每个月份的有数字的单元格 -->
+								<view class='cell' wx:else>
+									<!-- 当前日期已签到 -->
+									<view wx:if="{{days[j+k].isSign == true}}" style='background-color:#ffe3b3' class='cell'>
+										<text>{{days[j+k].date}}</text>
+									</view>
+									<!-- 当前日期未签到 -->
+									<view wx:else>
+										<text>{{days[j+k].date}}</text>
+									</view>
+
+								</view>
+							</view>
+						</view>
+					</view>
+				</view>
+			</view>
+		</van-row>
+
+
+		<van-row>
+			<!-- 坚持打卡天数 -->
+			<view class='count'>
+				<text>本月已坚持练习</text>
+				<view class='daynumber'>
+					<text class='number'>{{count}}</text>
+					<text class='day'>天</text>
+				</view>
+			</view>
+		</van-row>
+
+		<van-row>
+			<view class="list-height">
+				<van-panel title="{{grade}}年级排名" desc="综合积分排行" status="最新">
+					<view class="list-height">
+						<block wx:for="{{rank}}" wx:key="index">
+							<van-cell value="{{item.point}}" icon="user-circle-o" is-link>
+								<view slot="title">
+									<view class="van-cell-text ">{{item.nickname}}</view>
+									<block wx:if="{{index == 0}}">
+										<van-tag type="danger">冠军</van-tag>
+									</block>
+									<block wx:elif="{{index == 1}}">
+										<van-tag type="primary ">亚军</van-tag>
+									</block>
+									<block wx:elif="{{index == 2}}">
+										<van-tag type="success">季军</van-tag>
+									</block>
+									<block wx:elif="{{index == 3}}">
+										<van-tag type="warning">殿军</van-tag>
+									</block>
+								</view>
+							</van-cell>
+						</block>
+					</view>
+				</van-panel>
+			</view>
+		</van-row>
+
+	</swiper-item>
+
+	<!-- Report page -->
+	<swiper-item class="containerRep">
+
+		<!-- <view class="rp_record_bar">
+			<van-panel title="{{nickName}}答题记录" desc="本日答题情况" status="本日">
+			</van-panel>
+		</view>
+
+		<view class="chart-height">
+			<ec-canvas id="mychart-dom-multi-bar" canvas-id="mychart-multi-bar" ec="{{ ecBar }}"></ec-canvas>
+		</view>
+
+		<view class="rp_current_bar">
+			<van-grid column-num="4" border>
+				<van-grid-item text="本日15题" icon="records" />
+				<van-grid-item text="答对5题" icon="completed" info="3" />
+				<van-grid-item text="正确率" icon="discount" info="75%" />
+				<van-grid-item text="累计325题" icon="medal-o" />
+			</van-grid>
+		</view>
+
+		<view class="chart-height">
+			<ec-canvas id="mychart-dom-multi-scatter" canvas-id="mychart-multi-scatter" ec="{{ ecScatter }}"></ec-canvas>
+		</view> -->
+
+	</swiper-item>
+
+	<!-- About page -->
+	<swiper-item>
+		<van-row custom-class="abTopBg">
+			<van-col span="14">
+				<van-row custom-class="abTitPos">
+					<van-col span="12">　背书帮手</van-col>
+					<van-col span="2">0.1b</van-col>
+				</van-row>
+				<van-row custom-class="ab_tit_brand">
+					@反馈式异步记忆应用
+					<!-- <van-button round color="#a4ddfb">@反馈式异步记忆应用</van-button> -->
+				</van-row>
+			</van-col>
+			<van-col span="10">
+				<van-image round width="250rpx" height="250rpx" src="cloud://rect-ths5v.7265-rect-ths5v-1302558031/bsbs.jpg" custom-class="abImgPos" />
+			</van-col>
+		</van-row>
+
+		<van-notice-bar backgroundColor="#ffffff" color="#bbbbbb" left-icon="cloud://rect-ths5v.7265-rect-ths5v-1302558031/cankle.png" text="在线学习辅助工具链　　　　　　　ASCEDU.CO LTD 专业教育应用开发服务" />
+
+		<van-row>
+			<van-cell-group title="分组1">
+				<van-cell title="设置" icon="location-o" is-link />
+				<van-cell title="统计" icon="location-o" is-link />
+				<van-cell title="历史" icon="location-o" is-link />
+			</van-cell-group>
+
+			<van-cell-group title="更多">
+				<van-cell value="内容" icon="shop-o" is-link>
+					<view slot="title">
+						<view class="van-cell-text">联系客服</view>
+						<van-tag type="danger">标签</van-tag>
+					</view>
+				</van-cell>
+				<van-cell title="更多应用">
+					<van-icon slot="right-icon" name="search" class="custom-icon" />
+				</van-cell>
+			</van-cell-group>
+		</van-row>
+
+	</swiper-item>
+
+</swiper>
+
+<van-tabbar active="{{active}}" custom-class="tabbar" safe-area-inset-bottom="{{ false }}" bind:change="onChange">
+	<van-tabbar-item icon="home-o">背书</van-tabbar-item>
+	<van-tabbar-item icon="chart-trending-o">排名</van-tabbar-item>
+	<van-tabbar-item icon="bookmark-o">统计</van-tabbar-item>
+	<van-tabbar-item icon="contact">关于</van-tabbar-item>
+</van-tabbar>
+
+<van-popup show="{{ show }}" round position="top" custom-style="height: 40%" bind:close="onIxPwClose">
+	<van-picker columns="{{ columns }}" bind:change="onIxPkChange" bind:cancel="onIxPkCancel" bind:confirm="onIxPkConfirm" show-toolbar />
+</van-popup>

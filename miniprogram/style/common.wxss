@@ -1,0 +1,44 @@
+/* common css  */
+.top-50 {
+    margin-top: 50rpx;
+}
+
+.top-350 {
+    margin-top: 350rpx;
+}
+
+.top-450 {
+    margin-top: 450rpx;
+}
+
+.top-500 {
+    margin-top: 500rpx;
+}
+
+.top-550 {
+    margin-top: 550rpx;
+}
+
+.top-750 {
+    margin-top: 750rpx;
+}
+
+.top-850 {
+    margin-top: 850rpx;
+}
+
+.top-900 {
+    margin-top: 900rpx;
+}
+
+.top-1050 {
+    margin-top: 1050rpx;
+}
+
+.bc-red {
+    background-color: crimson;
+}
+
+.bc-green {
+    background-color: aquamarine;
+}
